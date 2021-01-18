@@ -18,7 +18,7 @@ ARG BUILD_DATE
 ARG VCS_REF
 ARG VERSION
 
-ENV MONGODB_TOOLS_VERSION 4.2.3-r1
+ENV MONGODB_TOOLS_VERSION 100.2.1
 ENV GNUPG_VERSION 2.2.23-r0
 ENV GOOGLE_CLOUD_SDK_VERSION 316.0.0
 ENV AZURE_CLI_VERSION 2.13.0
@@ -35,7 +35,12 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.version=$VERSION \
       org.label-schema.schema-version="1.0"
 
-RUN apk add --no-cache ca-certificates tzdata mongodb-tools=${MONGODB_TOOLS_VERSION} gnupg=${GNUPG_VERSION}
+RUN apk add krb5-libs
+RUN wget https://fastdl.mongodb.org/tools/db/mongodb-database-tools-ubuntu1604-x86_64-${MONGODB_TOOLS_VERSION}.tgz
+RUN tar -zxvf mongodb-database-tools-*-${MONGODB_TOOLS_VERSION}.tgz
+RUN cp mongodb-database-tools-ubuntu1604-x86_64-${MONGODB_TOOLS_VERSION}/bin/mongo* /usr/bin/
+
+RUN apk add --no-cache ca-certificates tzdata gnupg=${GNUPG_VERSION}
 ADD https://dl.minio.io/client/mc/release/linux-amd64/mc /usr/bin
 RUN chmod u+x /usr/bin/mc
 
